@@ -16,17 +16,17 @@ sudo apt install temurin-17-jdk -y
 # Verify Java
 /usr/bin/java --version 
 
-# Install Jenkins
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+# Add Jenkins GPG key properly
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
+  sudo gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg
 
+# Add Jenkins repo
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" | \
+  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update and install
 sudo apt-get update -y
 sudo apt-get install jenkins -y
-
-# Start Jenkins
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
-sudo systemctl status jenkins
 
 # Install Docker
 sudo apt-get update
