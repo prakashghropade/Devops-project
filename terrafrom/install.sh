@@ -11,22 +11,22 @@ wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo te
 echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
 
 sudo apt update -y
-sudo apt install temurin-17-jdk -y
+
+sudo apt install fontconfig openjdk-17-jre -y
 
 # Verify Java
 /usr/bin/java --version 
 
-# Add Jenkins GPG key properly
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
-  sudo gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian/jenkins.io-2026.key
 
-# Add Jenkins repo
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" | \
-  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
 
-# Update and install
-sudo apt-get update -y
-sudo apt-get install jenkins -y
+sudo apt update
+
+sudo apt install jenkins
 
 # Install Docker
 sudo apt-get update
